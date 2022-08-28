@@ -1,0 +1,136 @@
+#:kivy 1.0.9
+
+<WindowManager>:
+    StudyPage:
+    Projects:
+    QA:
+    DataManager:
+    Commands:
+    Add_Wizard:
+
+<NavBar>:
+    orientation: "vertical"
+    spacing: "10dp"
+    size_hint: .1,1
+    Button:
+        text: "Study"
+        on_press: app.root.current = 'study'
+    Button:
+        text: "Projects"
+        on_press: app.root.current = 'projects'
+    Button:
+        text: "Q/A"
+        on_press: app.root.current = 'qa'
+    Button:
+        text: "Data"
+        on_press: app.root.current = 'data_man'
+
+<StudyPage>:
+    name: 'study'
+    NavBar:
+    BoxLayout:
+        size_hint: .9,1
+        pos_hint: {'right': 1}
+        orientation: "vertical"
+        Label:
+            font_size: 30
+            text: "What would you like to study?"
+            pos_hint: {'center_x': 0.5,'top': 0}
+            size_hint: .2,.2
+
+        BoxLayout:
+            size_hint: .8,.2
+            pos_hint: {'center_x': 0.5,'center_y': 0.3}
+            Button:
+                size_hint: .8,.8
+                text: "MySQL"
+                on_press: app.root.current = 'sql_study'
+
+            Button:
+                size_hint: .8,.8
+                text: "Python"
+                on_press: app.root.current = 'python_study'
+
+<DataManager>:
+    name: 'data_man'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Button:
+            text: "Enter Mysql Commands"
+            on_press: app.root.current = 'command'
+        Button:
+            text:"Add Data Wizard"
+            on_press: app.root.current = 'add_wizard'
+        Button:
+            text: "Remove Data Wizard"
+            on_press: app.root.current = 'rem_wizard'
+
+
+<QA>:
+    name: 'qa'
+    NavBar:
+
+<Projects>:
+    name: 'projects'
+    NavBar:
+
+<Commands>:
+    name: 'command'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        CodeInput:
+            id: code
+            lexer: app.lexer
+        BoxLayout:
+            size_hint: 1,.1
+            Button:
+                text: "Run Code"
+                on_press: app.command_run(code.text)
+            Button:
+                text: "Clear Code"
+                on_press: code.text = ''
+
+<Add_Wizard>:
+    name: 'add_wizard'
+    NavBar:
+    GridLayout:
+        cols: 2
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: 'Category'
+        GridLayout:
+            cols: 2
+            size_hint: .2,.2
+            pos_hint:{'right':1}
+            Label:
+                text: 'MySQL'
+            CheckBox:
+                id: mysql
+                group: 'categories'
+            Label:
+                text: 'Python'
+            CheckBox:
+                id: python
+                group: 'categories'
+        Label:
+            text: 'Question'
+        TextInput:
+            id: question
+        Label:
+            text: 'Answer'
+        TextInput:
+            id: answer
+        Button:
+            text: 'Submit'
+            on_press: app.add_wizard(mysql,python,answer,question)
+            on_release: app.clear_wizard(mysql,python,answer,question) 
+        Button:
+            text:'Cancel'
+            on_press: app.clear_wizard(mysql,python,answer,question)

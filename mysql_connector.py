@@ -149,8 +149,9 @@ def get_question(category):
         cursor = cnx.cursor()
         cat_id = get_category(category)
         cursor.execute("SELECT count(flash_id) FROM flash_cards WHERE category_id = %s",[cat_id])
-        question_num = randint(1,cursor.fetchone()[0])
-        cursor.execute("SELECT * FROM flash_cards WHERE category_id = %s LIMIT %s,1",[cat_id,question_num])
+        questionslen = cursor.fetchone()[0]
+        question_num = randint(1,questionslen)
+        cursor.execute("SELECT * FROM flash_cards WHERE category_id = %s LIMIT %s,1",[cat_id,question_num-1])
         question = cursor.fetchone()
         cursor.execute("SELECT * FROM fakes WHERE fakes_id = %s",[question[4]])
         fakes = cursor.fetchone()

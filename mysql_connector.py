@@ -4,6 +4,8 @@ database = "interviewprep"
 host='127.0.0.1'
 
 
+from random import randint
+
 import mysql.connector
 from mysql.connector import errorcode
 
@@ -101,3 +103,61 @@ def add_data(data:dict):
         cursor.close()
         cnx.close()
 
+def rem_flash(answer = None,question = None):
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor(f"USE {database}")
+        if answer:
+            if question:
+                cursor.execute(f"""
+                               DELETE FROM flash_cards WHERE answer = '{answer}' AND question = '{question}'
+                               """)
+            cursor.execute(f"""
+                               DELETE FROM flash_cards WHERE answer = '{answer}'
+                               """)
+        else:
+            cursor.execute(f"""
+                               DELETE FROM flash_cards WHERE question = '{question}'
+                               """)
+        cnx.commit()
+        print('Succeded')
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    else:
+        cursor.close()
+        cnx.close()
+
+def get_question(category):
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor(f"USE {database}")
+        qa = []
+        if category.lower() == 'mysql':
+            cat_id = 1
+            cursor.execute("SELECT COUNT(flash_id) as count FROM flash_cards WHERE category_id = 1")
+            for (count) in cursor:
+                if count[0] > 4:
+                    limit_num = randint(0,count-4)
+                else:
+                    return None
+        if category.lower() == 'python':
+            cat_id = 2
+            cursor.execute("SELECT COUNT(flash_id) as count FROM flash_cards WHERE category_id = 2")
+            for (count) in cursor:
+                print(count[0])
+                if count[0] > 4:
+                    limit_num = randint(0,count[0]-4)
+                else:
+                    return None
+        else:
+            return None
+        cursor.execute(f"SELECT answer, question FROM flash_cards WHERE category_id = {cat_id} LIMIT {limit_num},4")
+        for (answer,question) in cursor:
+            qa.append([answer,question])
+        print('Succeded')
+        return qa
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()

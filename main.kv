@@ -7,6 +7,11 @@
     DataManager:
     Commands:
     Add_Wizard:
+    Rem_Wizard:
+    StudyMysql:
+    StudyPython:
+    CorrectFlash:
+    WrongFlash:
 
 <NavBar>:
     orientation: "vertical"
@@ -25,6 +30,19 @@
         text: "Data"
         on_press: app.root.current = 'data_man'
 
+<CategoryButtons>:
+    size_hint: .8,.9
+    pos_hint: {'center_x': 0.5,'center_y': 0.3}
+    Button:
+        size_hint: .8,.8
+        text: "MySQL"
+        on_press: app.root.current = 'study_mysql'
+
+    Button:
+        size_hint: .8,.8
+        text: "Python"
+        on_press: app.root.current = 'study_python'
+
 <StudyPage>:
     name: 'study'
     NavBar:
@@ -36,20 +54,8 @@
             font_size: 30
             text: "What would you like to study?"
             pos_hint: {'center_x': 0.5,'top': 0}
-            size_hint: .2,.2
-
-        BoxLayout:
-            size_hint: .8,.2
-            pos_hint: {'center_x': 0.5,'center_y': 0.3}
-            Button:
-                size_hint: .8,.8
-                text: "MySQL"
-                on_press: app.root.current = 'sql_study'
-
-            Button:
-                size_hint: .8,.8
-                text: "Python"
-                on_press: app.root.current = 'python_study'
+            size_hint: .2,.1
+        CategoryButtons:
 
 <DataManager>:
     name: 'data_man'
@@ -76,6 +82,46 @@
 <Projects>:
     name: 'projects'
     NavBar:
+    GridLayout:
+        cols: 2
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: 'Common Questions'
+        Label:
+            text: 'Project'
+        Label:
+            text: 'Name'
+        TextInput:
+            id: project_name
+        Label:
+            text: 'Challenges'
+        TextInput:
+            id: challenges
+        Label:
+            text: 'Mistakes/Failures'
+        TextInput:
+            id: mistakes
+        Label:
+            text:'Enjoyed'
+        TextInput:
+            id: enjoyed
+        Label:
+            text: 'Leadership'
+        TextInput:
+            id: leadership
+        Label:
+            text: 'Conflicts'
+        TextInput:
+            id: conflicts
+        Label:
+            text: 'What You Would Do Different'
+        TextInput:
+            id: different
+        Button:
+            text: 'Add'
+        Button:
+            text: 'Review'
 
 <Commands>:
     name: 'command'
@@ -130,7 +176,132 @@
         Button:
             text: 'Submit'
             on_press: app.add_wizard(mysql,python,answer,question)
-            on_release: app.clear_wizard(mysql,python,answer,question) 
         Button:
             text:'Cancel'
             on_press: app.clear_wizard(mysql,python,answer,question)
+            on_release: app.root.current = 'data_man'
+
+<Rem_Wizard>:
+    name: 'rem_wizard'
+    NavBar:
+    GridLayout:
+        cols: 2
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: 'You can fill in any field'
+        Label:
+            text: 'it will delete based off only the fields input'
+        Label:
+            text: 'Question'
+        TextInput:
+            id: question
+        Label:
+            text: 'Answer'
+        TextInput:
+            id: answer
+        Button:
+            text: 'Delete'
+            on_press: app.rem_wizard(answer,question)
+        Button:
+            text:'Cancel'
+            on_press: app.clear_rem_wizard(answer,question)
+            on_release: app.root.current = 'data_man'
+
+<StudyPython>:
+    name: 'study_python'
+    on_pre_enter: app.get_python_question()
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: app.question
+        GridLayout:
+            cols: 2
+            size_hint: 1,1.5
+            pos_hint:{'bottom':0}
+            Button:
+                text: app.ans_a
+                text_size: self.size
+                on_press: app.check_answer(1)
+            Button:
+                text: app.ans_b
+                text_size: self.size
+                on_press: app.check_answer(2)
+            Button:
+                text: app.ans_c
+                text_size: self.size
+                on_press: app.check_answer(3)
+            Button:
+                text: app.ans_d
+                text_size: self.size
+                on_press: app.check_answer(4)
+
+<StudyMysql>:
+    name: 'study_mysql'
+    on_pre_enter: app.get_mysql_question()
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: app.question
+        GridLayout:
+            cols: 2
+            size_hint: 1,1.5
+            pos_hint:{'bottom':0}
+            Button:
+                text: app.ans_a
+                text_size: self.size
+                on_press: app.check_answer(1)
+            Button:
+                text: app.ans_b
+                text_size: self.size
+                on_press: app.check_answer(2)
+            Button:
+                text: app.ans_c
+                text_size: self.size
+                on_press: app.check_answer(3)
+            Button:
+                text: app.ans_d
+                text_size: self.size
+                on_press: app.check_answer(4)
+
+<CorrectFlash>:
+    name: 'correct_flash'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        canvas.before:
+            Color:
+                rgba: 0, .8, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Correct'
+            color: 0, 0, 0, 1
+        CategoryButtons:
+
+<WrongFlash>:
+    name: 'wrong_flash'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        canvas.before:
+            Color:
+                rgba: .8, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Incorrect'
+            color: 0, 0, 0, 1
+        CategoryButtons:

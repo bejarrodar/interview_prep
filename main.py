@@ -1,10 +1,11 @@
 from random import randint
 
-from kivy.app import App
-from kivy.lang import Builder
-from kivy.properties import ObjectProperty, StringProperty
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.app import App  # @UnresolvedImport
+from kivy.lang import Builder  # @UnresolvedImport
+from kivy.properties import ObjectProperty, StringProperty  # @UnresolvedImport
+from kivy.uix.boxlayout import BoxLayout  # @UnresolvedImport
+from kivy.uix.gridlayout import GridLayout  # @UnresolvedImport
+from kivy.uix.screenmanager import Screen, ScreenManager  # @UnresolvedImport
 from pygments.lexers.sql import MySqlLexer
 
 import mysql_connector
@@ -17,6 +18,9 @@ class NavBar(BoxLayout):
     pass
 
 class CategoryButtons(BoxLayout):
+    pass
+
+class CategoryRadial(GridLayout):
     pass
 
 class StudyPage(Screen):
@@ -77,56 +81,56 @@ class InterviewPrepApp(App):
     def get_mysql_question(self):
         data = mysql_connector.get_question('mysql')
         if data:
-            self.question = data[0][1]
+            self.question = data[0]
             self.correct = randint(1,4)
             match self.correct:
                 case 1:
-                    self.ans_a = data[0][0]
-                    self.ans_b = data[1][0]
-                    self.ans_c = data[2][0]
-                    self.ans_d = data[3][0]
+                    self.ans_a = data[1]
+                    self.ans_b = data[2]
+                    self.ans_c = data[3]
+                    self.ans_d = data[4]
                 case 2:
-                    self.ans_a = data[1][0]
-                    self.ans_b = data[0][0]
-                    self.ans_c = data[2][0]
-                    self.ans_d = data[3][0]
+                    self.ans_a = data[2]
+                    self.ans_b = data[1]
+                    self.ans_c = data[3]
+                    self.ans_d = data[4]
                 case 3:
-                    self.ans_a = data[2][0]
-                    self.ans_b = data[1][0]
-                    self.ans_c = data[0][0]
-                    self.ans_d = data[3][0]
+                    self.ans_a = data[3]
+                    self.ans_b = data[2]
+                    self.ans_c = data[1]
+                    self.ans_d = data[4]
                 case 4:
-                    self.ans_a = data[3][0]
-                    self.ans_b = data[1][0]
-                    self.ans_c = data[2][0]
-                    self.ans_d = data[0][0]
+                    self.ans_a = data[4]
+                    self.ans_b = data[2]
+                    self.ans_c = data[3]
+                    self.ans_d = data[1]
         
     def get_python_question(self):
         data = mysql_connector.get_question('python')
         if data:
-            self.question = data[0][1]
+            self.question = data[0]
             self.correct = randint(1,4)
             match self.correct:
                 case 1:
-                    self.ans_a = data[0][0]
-                    self.ans_b = data[1][0]
-                    self.ans_c = data[2][0]
-                    self.ans_d = data[3][0]
+                    self.ans_a = data[1]
+                    self.ans_b = data[2]
+                    self.ans_c = data[3]
+                    self.ans_d = data[4]
                 case 2:
-                    self.ans_a = data[1][0]
-                    self.ans_b = data[0][0]
-                    self.ans_c = data[2][0]
-                    self.ans_d = data[3][0]
+                    self.ans_a = data[2]
+                    self.ans_b = data[1]
+                    self.ans_c = data[3]
+                    self.ans_d = data[4]
                 case 3:
-                    self.ans_a = data[2][0]
-                    self.ans_b = data[1][0]
-                    self.ans_c = data[0][0]
-                    self.ans_d = data[3][0]
+                    self.ans_a = data[3]
+                    self.ans_b = data[2]
+                    self.ans_c = data[1]
+                    self.ans_d = data[4]
                 case 4:
-                    self.ans_a = data[3][0]
-                    self.ans_b = data[1][0]
-                    self.ans_c = data[2][0]
-                    self.ans_d = data[0][0]
+                    self.ans_a = data[4]
+                    self.ans_b = data[2]
+                    self.ans_c = data[3]
+                    self.ans_d = data[1]
     
     def rem_wizard(self,answer,question):
         if answer.text != '':

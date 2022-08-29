@@ -78,6 +78,22 @@
 <QA>:
     name: 'qa'
     NavBar:
+    GridLayout:
+        cols: 2
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: 'Questions'
+        TextInput:
+            id: qa_questions
+        Label:
+            text:'Answers'
+        TextInput:
+            id: qa_answers
+        Button:
+            text: 'Add'
+        Button:
+            text:'Review'
 
 <Projects>:
     name: 'projects'

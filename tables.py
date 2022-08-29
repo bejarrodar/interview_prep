@@ -4,13 +4,23 @@ CREATE TABLE categories(
     category varchar(255)
 )"""
 
+fakes = """
+CREATE TABLE fakes(
+    fakes_id INT AUTO_INCREMENT PRIMARY KEY,
+    fake1 TEXT,
+    fake2 TEXT,
+    fake3 TEXT
+)"""
+
 flash_cards = """
 CREATE TABLE flash_cards(
     flash_id INT AUTO_INCREMENT PRIMARY KEY,
     category_id int,
     answer TEXT,
     question TEXT,
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    fakes_id INT,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (fakes_id) REFERENCES fakes(fakes_id)
 )"""
 
 projects = """

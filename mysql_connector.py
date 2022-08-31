@@ -211,3 +211,64 @@ def get_cat_list():
     finally:
         cursor.close()
         cnx.close()
+
+def add_qa(question,answer):
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute("INSERT INTO questions(question, answers) VALUES (%s,%s)",[question,answer])
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+        
+def get_qa():
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute("SELECT question, answers FROM questions")
+        return cursor.fetchall()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+        
+def add_project(project_name,challenges,mistakes,enjoyed,leadership,conflicts,different):
+    sql_statement = "INSERT INTO projects(project_name,challenges,mistakes,enjoyed,leadership,conflicts,changes) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute(sql_statement,[project_name,challenges,mistakes,enjoyed,leadership,conflicts,different])
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+
+def get_project(project):
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute("SELECT project_name,challenges,mistakes,enjoyed,leadership,conflicts,changes FROM projects WHERE project_name = %s",[project])
+        return cursor.fetchall()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+
+def get_project_names():
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute("SELECT project_name FROM projects")
+        return cursor.fetchall()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()

@@ -6,6 +6,8 @@ from kivy.lang import Builder  # @UnresolvedImport
 from kivy.properties import ObjectProperty, StringProperty  # @UnresolvedImport
 from kivy.uix.boxlayout import BoxLayout  # @UnresolvedImport
 from kivy.uix.button import Button  # @UnresolvedImport
+from kivy.uix.gridlayout import GridLayout  # @UnresolvedImport
+from kivy.uix.label import Label  # @UnresolvedImport
 from kivy.uix.screenmanager import Screen, ScreenManager  # @UnresolvedImport
 from pygments.lexers.sql import MySqlLexer
 
@@ -88,6 +90,53 @@ class WrongFlash(Screen):
             self.button_list.append(Button(text=cat_list[i]))
             self.button_list[i].bind(on_press= self.set_cat_window)
             self.ids.buttons.add_widget(self.button_list[i])
+
+class ReviewProjects(Screen):
+    def select_button(self,btn):
+        self.box.clear_widgets()
+        grid = GridLayout(cols=2,size_hint=(.9,1),pos_hint={'right':1},spacing=(.1,.1))
+        project = mysql_connector.get_project(btn.text) #name,challenges,mistakes,enjoyed,leadership,conflicts,changes
+        grid.add_widget(Label(text='Name:',size_hint=(.5,1)))
+        grid.add_widget(Label(text=project[0][0]))
+        grid.add_widget(Label(text='Challenges:',size_hint=(.5,1)))
+        grid.add_widget(Label(text=project[0][1]))
+        grid.add_widget(Label(text='Mistakes:',size_hint=(.5,1)))
+        grid.add_widget(Label(text=project[0][2]))
+        grid.add_widget(Label(text='Enjoyed:',size_hint=(.5,1)))
+        grid.add_widget(Label(text=project[0][3]))
+        grid.add_widget(Label(text='Leadership:',size_hint=(.5,1)))
+        grid.add_widget(Label(text=project[0][4]))
+        grid.add_widget(Label(text='Conflicts:',size_hint=(.5,1)))
+        grid.add_widget(Label(text=project[0][5]))
+        grid.add_widget(Label(text='What You Would Do Different:',size_hint=(.5,1)))
+        grid.add_widget(Label(text=project[0][6]))
+        self.add_widget(grid)
+    
+    @mainthread
+    def on_enter(self):
+        navbar = NavBar()
+        self.add_widget(navbar)
+        project_names = mysql_connector.get_project_names()
+        self.box = BoxLayout(size_hint=(.9,1),pos_hint={'right':1})
+        for each in project_names:
+            this_button = Button(text=each[0])
+            this_button.bind(on_press= self.select_button)
+            self.box.add_widget(this_button)
+        self.add_widget(self.box)
+
+class ReviewQA(Screen):
+    @mainthread
+    def on_enter(self):
+        navbar = NavBar()
+        self.add_widget(navbar)
+        grid = GridLayout(cols=2,size_hint=(.9,1),pos_hint={'right':1},spacing=(.1,.1))
+        qas = mysql_connector.get_qa()
+        grid.add_widget(Label(text='Questions:'))
+        grid.add_widget(Label(text='Answers:'))
+        for each in qas:
+            grid.add_widget(Label(text=each[0]))
+            grid.add_widget(Label(text=each[1]))
+        self.add_widget(grid)
 
 kv = Builder.load_file('main.kv')
 
@@ -173,6 +222,21 @@ class InterviewPrepApp(App):
     def command_run(self,code):
         print(code)
         mysql_connector.run_code(code)
+        
+    def add_qa(self,question,answer):
+        mysql_connector.add_qa(question.text,answer.text)
+        question.text = ''
+        answer.text = ''
+        
+    def add_project(self,project_name,challenges,mistakes,enjoyed,leadership,conflicts,different):
+        mysql_connector.add_project(project_name.text,challenges.text,mistakes.text,enjoyed.text,leadership.text,conflicts.text,different.text)
+        project_name.text = ''
+        challenges.text = ''
+        mistakes.text = ''
+        enjoyed.text = ''
+        leadership.text = ''
+        conflicts.text = ''
+        different.text = ''
     
     def build(self):
         self.window = WindowManager()

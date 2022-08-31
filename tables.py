@@ -26,15 +26,18 @@ CREATE TABLE flash_cards(
 projects = """
 CREATE TABLE projects(
     project_id INT AUTO_INCREMENT PRIMARY KEY,
-    mistakes BLOB,
-    enjoyed BLOB,
-    changes BLOB,
-    leadership BLOB DEFAULT NULL,
-    conflicts BLOB DEFAULT NULL
+    project_name VARCHAR(50),
+    challenges TEXT,
+    mistakes TEXT,
+    enjoyed TEXT,
+    changes TEXT,
+    leadership TEXT DEFAULT NULL,
+    conflicts TEXT DEFAULT NULL
 )"""
 
 questions = """
 CREATE TABLE questions(
     question_id INT AUTO_INCREMENT PRIMARY KEY,
-    question BLOB
+    question TEXT,
+    answers TEXT
 )"""

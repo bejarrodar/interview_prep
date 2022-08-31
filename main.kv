@@ -11,6 +11,8 @@
     FlashCard:
     CorrectFlash:
     WrongFlash:
+    ReviewProjects:
+    ReviewQA:
 
 <NavBar>:
     orientation: "vertical"
@@ -80,8 +82,10 @@
             id: qa_answers
         Button:
             text: 'Add'
+            on_press: app.add_qa(qa_questions,qa_answers)
         Button:
             text:'Review'
+            on_press: app.root.current = 'review_qa'
 
 <Projects>:
     name: 'projects'
@@ -124,8 +128,16 @@
             id: different
         Button:
             text: 'Add'
+            on_press: app.add_project(project_name,challenges,mistakes,enjoyed,leadership,conflicts,different)
         Button:
             text: 'Review'
+            on_press: app.root.current = 'review_projects'
+
+<ReviewProjects>:
+    name: 'review_projects'
+
+<ReviewQA>:
+    name: 'review_qa'
 
 <Commands>:
     name: 'command'
@@ -187,7 +199,7 @@
             on_press: app.clear_wizard(category,answer,question,fake1,fake2,fake3)
             on_release: app.root.current = 'data_man'
 
-<Rem_Wizard>: 
+<Rem_Wizard>:
     name: 'rem_wizard'
     NavBar:
     GridLayout:

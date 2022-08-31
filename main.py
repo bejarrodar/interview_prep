@@ -1,10 +1,11 @@
 from random import randint
 
 from kivy.app import App  # @UnresolvedImport
+from kivy.clock import mainthread  # @UnresolvedImport
 from kivy.lang import Builder  # @UnresolvedImport
 from kivy.properties import ObjectProperty, StringProperty  # @UnresolvedImport
 from kivy.uix.boxlayout import BoxLayout  # @UnresolvedImport
-from kivy.uix.gridlayout import GridLayout  # @UnresolvedImport
+from kivy.uix.button import Button  # @UnresolvedImport
 from kivy.uix.screenmanager import Screen, ScreenManager  # @UnresolvedImport
 from pygments.lexers.sql import MySqlLexer
 
@@ -12,18 +13,30 @@ import mysql_connector
 
 
 class WindowManager(ScreenManager):
+    def get_question(self,category):
+        self.parent.get_question(category.text)
     pass
 
 class NavBar(BoxLayout):
     pass
 
-class CategoryButtons(BoxLayout):
-    pass
-
-class CategoryRadial(GridLayout):
-    pass
-
 class StudyPage(Screen):
+    button_list = []
+    def set_cat_window(self,category):
+        app.get_question(category.text)
+        self.parent.current = 'flash_card'
+    
+    @mainthread
+    def on_enter(self):
+        self.button_list = []
+        self.ids.buttons.clear_widgets()
+        cat_list = mysql_connector.get_cat_list()
+        for i in range(len(cat_list)):
+            self.button_list.append(Button(text=cat_list[i]))
+            self.button_list[i].bind(on_press= self.set_cat_window)
+            self.ids.buttons.add_widget(self.button_list[i])
+
+class FlashCard(Screen):
     pass
 
 class Projects(Screen):
@@ -44,17 +57,37 @@ class Add_Wizard(Screen):
 class Rem_Wizard(Screen):
     pass
 
-class StudyMysql(Screen):
-    pass
-
-class StudyPython(Screen):
-    pass
-
 class CorrectFlash(Screen):
-    pass
+    button_list = []
+    def set_cat_window(self,category):
+        app.get_question(category.text)
+        self.parent.current = 'flash_card'
+    
+    @mainthread
+    def on_enter(self):
+        self.button_list = []
+        self.ids.buttons.clear_widgets()
+        cat_list = mysql_connector.get_cat_list()
+        for i in range(len(cat_list)):
+            self.button_list.append(Button(text=cat_list[i]))
+            self.button_list[i].bind(on_press= self.set_cat_window)
+            self.ids.buttons.add_widget(self.button_list[i])
 
 class WrongFlash(Screen):
-    pass
+    button_list = []
+    def set_cat_window(self,category):
+        app.get_question(category.text)
+        self.parent.current = 'flash_card'
+    
+    @mainthread
+    def on_enter(self):
+        self.button_list = []
+        self.ids.buttons.clear_widgets()
+        cat_list = mysql_connector.get_cat_list()
+        for i in range(len(cat_list)):
+            self.button_list.append(Button(text=cat_list[i]))
+            self.button_list[i].bind(on_press= self.set_cat_window)
+            self.ids.buttons.add_widget(self.button_list[i])
 
 kv = Builder.load_file('main.kv')
 
@@ -78,8 +111,8 @@ class InterviewPrepApp(App):
         else:
             self.window.current = 'wrong_flash'
     
-    def get_mysql_question(self):
-        data = mysql_connector.get_question('mysql')
+    def get_question(self,category):
+        data = mysql_connector.get_question(category)
         if data:
             self.question = data[0]
             self.correct = randint(1,4)
@@ -104,35 +137,8 @@ class InterviewPrepApp(App):
                     self.ans_b = data[2]
                     self.ans_c = data[3]
                     self.ans_d = data[1]
-        
-    def get_python_question(self):
-        data = mysql_connector.get_question('python')
-        if data:
-            self.question = data[0]
-            self.correct = randint(1,4)
-            match self.correct:
-                case 1:
-                    self.ans_a = data[1]
-                    self.ans_b = data[2]
-                    self.ans_c = data[3]
-                    self.ans_d = data[4]
-                case 2:
-                    self.ans_a = data[2]
-                    self.ans_b = data[1]
-                    self.ans_c = data[3]
-                    self.ans_d = data[4]
-                case 3:
-                    self.ans_a = data[3]
-                    self.ans_b = data[2]
-                    self.ans_c = data[1]
-                    self.ans_d = data[4]
-                case 4:
-                    self.ans_a = data[4]
-                    self.ans_b = data[2]
-                    self.ans_c = data[3]
-                    self.ans_d = data[1]
-    
-    def rem_wizard(self,answer,question):
+
+    def rem_wizard(self,answer,question,fake1,fake2,fake3):
         if answer.text != '':
             if question.text != '':
                 mysql_connector.rem_flash(answer = answer.text,question = question.text)
@@ -140,26 +146,29 @@ class InterviewPrepApp(App):
         else:
             mysql_connector.rem_flash(question = question.text)
         self.clear_rem_wizard(answer,question)
+        if fake1.text != '' and fake2.text != '' and fake3.text != '':
+            mysql_connector.clear_fake(fake1,fake2,fake3)
     
-    def clear_rem_wizard(self,answer,question):
+    def clear_rem_wizard(self,answer,question,fake1,fake2,fake3):
         answer.text = ''
         question.text = ''
+        fake1.text = ''
+        fake2.text = ''
+        fake3.text = ''
     
-    def add_wizard(self,mysql,python,answer,question):
-        if mysql.active:
-            cat = 'mysql'
-        if python.active:
-            cat = 'python'
-        data = {'category':cat,'answer':answer.text,'question':question.text}
+    def add_wizard(self,category,answer,question,fake1,fake2,fake3):
+        data = {'category':category.text,'answer':answer.text,'question':question.text,'fake1':fake1.text,'fake2':fake2.text,'fake3':fake3.text}
         if mysql_connector.add_data(data):
-            self.clear_wizard(mysql,python,answer,question)
+            self.clear_wizard(category,answer,question,fake1,fake2,fake3)
 
 
-    def clear_wizard(self,mysql,python,answer,question):
-        mysql.active = False
-        python.active = False
+    def clear_wizard(self,category,answer,question,fake1,fake2,fake3):
+        category.text = ''
         answer.text = ''
         question.text = ''
+        fake1.text = ''
+        fake2.text = ''
+        fake3.text = ''
     
     def command_run(self,code):
         print(code)
@@ -171,4 +180,5 @@ class InterviewPrepApp(App):
 
 if __name__ == '__main__':
     mysql_connector.connect()
-    InterviewPrepApp().run()
+    app = InterviewPrepApp()
+    app.run()

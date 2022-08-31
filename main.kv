@@ -8,8 +8,7 @@
     Commands:
     Add_Wizard:
     Rem_Wizard:
-    StudyMysql:
-    StudyPython:
+    FlashCard:
     CorrectFlash:
     WrongFlash:
 
@@ -30,19 +29,6 @@
         text: "Data"
         on_press: app.root.current = 'data_man'
 
-<CategoryButtons>:
-    size_hint: .8,.9
-    pos_hint: {'center_x': 0.5,'center_y': 0.3}
-    Button:
-        size_hint: .8,.8
-        text: "MySQL"
-        on_press: app.root.current = 'study_mysql'
-
-    Button:
-        size_hint: .8,.8
-        text: "Python"
-        on_press: app.root.current = 'study_python'
-
 <StudyPage>:
     name: 'study'
     NavBar:
@@ -55,7 +41,9 @@
             text: "What would you like to study?"
             pos_hint: {'center_x': 0.5,'top': 0}
             size_hint: .2,.1
-        CategoryButtons:
+        GridLayout:
+            cols: 3
+            id: buttons
 
 <DataManager>:
     name: 'data_man'
@@ -158,7 +146,7 @@
                 text: "Clear Code"
                 on_press: code.text = ''
 
-<Add_Wizard>:
+<Add_Wizard>: 
     name: 'add_wizard'
     NavBar:
     GridLayout:
@@ -167,37 +155,39 @@
         pos_hint:{'right':1}
         Label:
             text: 'Category'
-        GridLayout:
-            cols: 2
-            size_hint: .2,.2
-            pos_hint:{'right':1}
-            Label:
-                text: 'MySQL'
-            CheckBox:
-                id: mysql
-                group: 'categories'
-            Label:
-                text: 'Python'
-            CheckBox:
-                id: python
-                group: 'categories'
+        TextInput:
+            size_hint: 1.5,.5
+            id: category
         Label:
             text: 'Question'
         TextInput:
+            size_hint: 1.5,.5
             id: question
         Label:
             text: 'Answer'
         TextInput:
+            size_hint: 1.5,.5
             id: answer
+        Label:
+            text: 'Fake Answers'
+        BoxLayout:
+            size_hint: 1.5,.5
+            orientation: "vertical"
+            TextInput:
+                id: fake1
+            TextInput:
+                id: fake2
+            TextInput:
+                id: fake3
         Button:
             text: 'Submit'
-            on_press: app.add_wizard(mysql,python,answer,question)
+            on_press: app.add_wizard(category,answer,question,fake1,fake2,fake3)
         Button:
             text:'Cancel'
-            on_press: app.clear_wizard(mysql,python,answer,question)
+            on_press: app.clear_wizard(category,answer,question,fake1,fake2,fake3)
             on_release: app.root.current = 'data_man'
 
-<Rem_Wizard>:
+<Rem_Wizard>: 
     name: 'rem_wizard'
     NavBar:
     GridLayout:
@@ -211,80 +201,31 @@
         Label:
             text: 'Question'
         TextInput:
+            size_hint: 1.5,.5
             id: question
         Label:
             text: 'Answer'
         TextInput:
+            size_hint: 1.5,.5
             id: answer
+        Label:
+            text: 'Fake Answers'
+        BoxLayout:
+            size_hint: 1.5,.5
+            orientation: "vertical"
+            TextInput:
+                id: fake1
+            TextInput:
+                id: fake2
+            TextInput:
+                id: fake3
         Button:
             text: 'Delete'
-            on_press: app.rem_wizard(answer,question)
+            on_press: app.rem_wizard(answer,question,fake1,fake2,fake3)
         Button:
             text:'Cancel'
-            on_press: app.clear_rem_wizard(answer,question)
+            on_press: app.clear_rem_wizard(answer,question,fake1,fake2,fake3)
             on_release: app.root.current = 'data_man'
-
-<StudyPython>:
-    name: 'study_python'
-    on_pre_enter: app.get_python_question()
-    NavBar:
-    BoxLayout:
-        orientation: "vertical"
-        size_hint: .9,1
-        pos_hint:{'right':1}
-        Label:
-            text: app.question
-        GridLayout:
-            cols: 2
-            size_hint: 1,1.5
-            pos_hint:{'bottom':0}
-            Button:
-                text: app.ans_a
-                text_size: self.size
-                on_press: app.check_answer(1)
-            Button:
-                text: app.ans_b
-                text_size: self.size
-                on_press: app.check_answer(2)
-            Button:
-                text: app.ans_c
-                text_size: self.size
-                on_press: app.check_answer(3)
-            Button:
-                text: app.ans_d
-                text_size: self.size
-                on_press: app.check_answer(4)
-
-<StudyMysql>:
-    name: 'study_mysql'
-    on_pre_enter: app.get_mysql_question()
-    NavBar:
-    BoxLayout:
-        orientation: "vertical"
-        size_hint: .9,1
-        pos_hint:{'right':1}
-        Label:
-            text: app.question
-        GridLayout:
-            cols: 2
-            size_hint: 1,1.5
-            pos_hint:{'bottom':0}
-            Button:
-                text: app.ans_a
-                text_size: self.size
-                on_press: app.check_answer(1)
-            Button:
-                text: app.ans_b
-                text_size: self.size
-                on_press: app.check_answer(2)
-            Button:
-                text: app.ans_c
-                text_size: self.size
-                on_press: app.check_answer(3)
-            Button:
-                text: app.ans_d
-                text_size: self.size
-                on_press: app.check_answer(4)
 
 <CorrectFlash>:
     name: 'correct_flash'
@@ -302,7 +243,11 @@
         Label:
             text: 'Correct'
             color: 0, 0, 0, 1
-        CategoryButtons:
+            pos_hint: {'center_x': 0.5,'top': 0}
+            size_hint: .2,.1
+        GridLayout:
+            cols: 3
+            id: buttons
 
 <WrongFlash>:
     name: 'wrong_flash'
@@ -320,4 +265,38 @@
         Label:
             text: 'Incorrect'
             color: 0, 0, 0, 1
-        CategoryButtons:
+            pos_hint: {'center_x': 0.5,'top': 0}
+            size_hint: .2,.1
+        GridLayout:
+            cols: 3
+            id: buttons
+
+<FlashCard>:
+    name:'flash_card'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: app.question
+        GridLayout:
+            cols: 2
+            size_hint: 1,1.5
+            pos_hint:{'bottom':0}
+            Button:
+                text: app.ans_a
+                text_size: self.size
+                on_press: app.check_answer(1)
+            Button:
+                text: app.ans_b
+                text_size: self.size
+                on_press: app.check_answer(2)
+            Button:
+                text: app.ans_c
+                text_size: self.size
+                on_press: app.check_answer(3)
+            Button:
+                text: app.ans_d
+                text_size: self.size
+                on_press: app.check_answer(4)

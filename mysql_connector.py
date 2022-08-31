@@ -18,8 +18,6 @@ def create_database():
         run_code(tables.flash_cards)
         run_code(tables.projects)
         run_code(tables.questions)
-        add_category('mysql')
-        add_category('python')
         enter_initial_data()
         cnx.commit()
     except mysql.connector.Error as err:
@@ -30,7 +28,10 @@ def create_database():
 
 def enter_initial_data():
     for each in knowledge:
-        run_code(each)
+        data = {'category':each[0],'question':each[1],'answer':each[2],'fake1':each[3],'fake2':each[4],'fake3':each[5]}
+        add_data(data)
+        
+        
 
 def connect():
     try:
@@ -58,7 +59,7 @@ def run_code(code:str):
         cursor.close()
         cnx.close()
         
-def add_category(category_name:list):
+def add_category(category_name:str):
     try:
         cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
         cursor = cnx.cursor()
@@ -75,26 +76,14 @@ def add_category(category_name:list):
         cnx.close()
         
 def add_data(data:dict):
+    flash_sql = """INSERT INTO flash_cards(category_id,question,answer,fakes_id) 
+            VALUES(%s,%s,%s,%s)"""
     try:
         cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
         cursor = cnx.cursor()
-        if data['category'].lower() == 'mysql':
-            cat_id = 1
-        elif data['category'].lower() == 'python':
-            cat_id = 2
-        else:
-            add_category(data['category'])
-            get_cat_id = """
-                        SELECT category_id from categories
-                        where category = %s
-                                         """
-            cursor.execute(get_cat_id,[data['category']])
-            for (category_id) in cursor:
-                cat_id = category_id
-        cursor.execute("""
-                        INSERT INTO flash_cards(category_id,answer,question)
-                        VALUES (%s, %s, %s)
-                        """,[cat_id, data['answer'], data['question']])
+        cat_id = get_category(data['category'])
+        fakes_id = get_fakes(data['fake1'],data['fake2'],data['fake3'])
+        cursor.execute(flash_sql,[cat_id, data['question'], data['answer'], fakes_id])
         cnx.commit()
         return True
     except mysql.connector.Error as err:
@@ -131,12 +120,13 @@ def get_category(category):
     try:
         cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
         cursor = cnx.cursor()
-        if category == 'mysql': cat_id = 1
-        elif category == 'python': cat_id = 2
+        cursor.execute("SELECT category_id FROM categories WHERE category = %s",[category])
+        cat_id = cursor.fetchone()
+        if cat_id:
+            return cat_id[0]
         else:
-            cursor.execute("SELECT category_id FROM categories WHERE category = %s",[category])
-            cat_id = cursor.fetchone()
-        return cat_id
+            add_category(category)
+            return get_category(category)
     except mysql.connector.Error as err:
         print(f"Failed executing code: {err}")
     finally:
@@ -157,6 +147,65 @@ def get_question(category):
         fakes = cursor.fetchone()
         return [question[3],question[2],fakes[1],fakes[2],fakes[3]]
         
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+
+def get_fakes(fake1,fake2,fake3):
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute("SELECT fakes_id FROM fakes WHERE fake1 IN (%s,%s,%s) AND fake2 IN (%s,%s,%s) AND fake3 IN (%s,%s,%s)",[fake1,fake2,fake3,fake1,fake2,fake3,fake1,fake2,fake3])
+        fakes_id = cursor.fetchone()
+        print(fakes_id)
+        if fakes_id:
+            return fakes_id[0]
+        else:
+            add_fakes(fake1,fake2,fake3)
+            return get_fakes(fake1,fake2,fake3)
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+
+def add_fakes(fake1,fake2,fake3):
+    fakes_sql = """INSERT INTO fakes(fake1,fake2,fake3) 
+            VALUES(%s,%s,%s)"""
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute(fakes_sql,[fake1,fake2,fake3])
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+        
+def clear_fake(fake1,fake2,fake3):
+    fake_id = get_fakes(fake1,fake2,fake3)
+    clear_fake_sql = "DELETE FROM fakes WHERE fakes_id = %s"
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute(clear_fake_sql,[fake_id])
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+        
+def get_cat_list():
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute("""SELECT DISTINCT category FROM categories""")
+        categories = [x[0] for x in cursor]
+        return categories
     except mysql.connector.Error as err:
         print(f"Failed executing code: {err}")
     finally:

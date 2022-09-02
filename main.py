@@ -9,6 +9,7 @@ from kivy.uix.button import Button  # @UnresolvedImport
 from kivy.uix.gridlayout import GridLayout  # @UnresolvedImport
 from kivy.uix.label import Label  # @UnresolvedImport
 from kivy.uix.screenmanager import Screen, ScreenManager  # @UnresolvedImport
+from kivy.uix.scrollview import ScrollView  # @UnresolvedImport
 from pygments.lexers.sql import MySqlLexer
 
 import mysql_connector
@@ -18,6 +19,22 @@ class WindowManager(ScreenManager):
     def get_question(self,category):
         self.parent.get_question(category.text)
     pass
+
+class WrappedButton(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.bind(
+            width=lambda *x:
+            self.setter('text_size')(self, (self.width, None)))
+            #,texture_size=lambda *x: self.setter('height')(self, self.texture_size[1]))
+
+class WrappedLabel(Label):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.bind(
+            width=lambda *x:
+            self.setter('text_size')(self, (self.width, None)),
+            texture_size=lambda *x: self.setter('height')(self, self.texture_size[1]))
 
 class NavBar(BoxLayout):
     pass
@@ -30,13 +47,22 @@ class StudyPage(Screen):
     
     @mainthread
     def on_enter(self):
-        self.button_list = []
-        self.ids.buttons.clear_widgets()
+        navbar = NavBar()
+        self.add_widget(navbar)
+        self.scroll_box = BoxLayout(size_hint=(.9,.9),pos_hint={'right':1,'top':.8})
+        self.scroll = ScrollView()
+        self.box = GridLayout(cols=2,size_hint_y= None,spacing=10)
         cat_list = mysql_connector.get_cat_list()
+        self.add_widget(Label(text="What would you like to study?",size_hint=(1,.1),pos_hint={'top':1}))
+        self.scroll = ScrollView(size_hint=(.9,1),pos_hint={'right':1})
+        self.box = GridLayout(cols=2,size_hint_y= None,spacing=10)
         for i in range(len(cat_list)):
-            self.button_list.append(Button(text=cat_list[i]))
-            self.button_list[i].bind(on_press= self.set_cat_window)
-            self.ids.buttons.add_widget(self.button_list[i])
+            this = Button(text=cat_list[i],size_hint_y=None,height='40dp')
+            this.bind(on_press= self.set_cat_window)
+            self.box.add_widget(this)
+        self.scroll.add_widget(self.box)
+        self.scroll_box.add_widget(self.scroll)
+        self.add_widget(self.scroll_box)
 
 class FlashCard(Screen):
     pass
@@ -67,13 +93,22 @@ class CorrectFlash(Screen):
     
     @mainthread
     def on_enter(self):
-        self.button_list = []
-        self.ids.buttons.clear_widgets()
+        navbar = NavBar()
+        self.add_widget(navbar)
+        self.scroll_box = BoxLayout(size_hint=(.9,.9),pos_hint={'right':1,'top':.8})
+        self.scroll = ScrollView()
+        self.box = GridLayout(cols=2,size_hint_y= None,spacing=10)
         cat_list = mysql_connector.get_cat_list()
+        self.add_widget(Label(text="",size_hint=(1,.1),pos_hint={'top':1}))
+        self.scroll = ScrollView(size_hint=(.9,1),pos_hint={'right':1})
+        self.box = GridLayout(cols=2,size_hint_y= None,spacing=10)
         for i in range(len(cat_list)):
-            self.button_list.append(Button(text=cat_list[i]))
-            self.button_list[i].bind(on_press= self.set_cat_window)
-            self.ids.buttons.add_widget(self.button_list[i])
+            this = Button(text=cat_list[i],size_hint_y=None,height='40dp')
+            this.bind(on_press= self.set_cat_window)
+            self.box.add_widget(this)
+        self.scroll.add_widget(self.box)
+        self.scroll_box.add_widget(self.scroll)
+        self.add_widget(self.scroll_box)
 
 class WrongFlash(Screen):
     button_list = []
@@ -83,13 +118,22 @@ class WrongFlash(Screen):
     
     @mainthread
     def on_enter(self):
-        self.button_list = []
-        self.ids.buttons.clear_widgets()
+        navbar = NavBar()
+        self.add_widget(navbar)
+        self.scroll_box = BoxLayout(size_hint=(.9,.9),pos_hint={'right':1,'top':.8})
+        self.scroll = ScrollView()
+        self.box = GridLayout(cols=2,size_hint_y= None,spacing=10)
         cat_list = mysql_connector.get_cat_list()
+        self.add_widget(Label(text="",size_hint=(1,.1),pos_hint={'top':1}))
+        self.scroll = ScrollView(size_hint=(.9,1),pos_hint={'right':1})
+        self.box = GridLayout(cols=2,size_hint_y= None,spacing=10)
         for i in range(len(cat_list)):
-            self.button_list.append(Button(text=cat_list[i]))
-            self.button_list[i].bind(on_press= self.set_cat_window)
-            self.ids.buttons.add_widget(self.button_list[i])
+            this = Button(text=cat_list[i],size_hint_y=None,height='40dp')
+            this.bind(on_press= self.set_cat_window)
+            self.box.add_widget(this)
+        self.scroll.add_widget(self.box)
+        self.scroll_box.add_widget(self.scroll)
+        self.add_widget(self.scroll_box)
 
 class ReviewProjects(Screen):
     def select_button(self,btn):
@@ -99,17 +143,17 @@ class ReviewProjects(Screen):
         grid.add_widget(Label(text='Name:',size_hint=(.5,1)))
         grid.add_widget(Label(text=project[0][0]))
         grid.add_widget(Label(text='Challenges:',size_hint=(.5,1)))
-        grid.add_widget(Label(text=project[0][1]))
+        grid.add_widget(WrappedLabel(text=project[0][1]))
         grid.add_widget(Label(text='Mistakes:',size_hint=(.5,1)))
-        grid.add_widget(Label(text=project[0][2]))
+        grid.add_widget(WrappedLabel(text=project[0][2]))
         grid.add_widget(Label(text='Enjoyed:',size_hint=(.5,1)))
-        grid.add_widget(Label(text=project[0][3]))
+        grid.add_widget(WrappedLabel(text=project[0][3]))
         grid.add_widget(Label(text='Leadership:',size_hint=(.5,1)))
-        grid.add_widget(Label(text=project[0][4]))
+        grid.add_widget(WrappedLabel(text=project[0][4]))
         grid.add_widget(Label(text='Conflicts:',size_hint=(.5,1)))
-        grid.add_widget(Label(text=project[0][5]))
+        grid.add_widget(WrappedLabel(text=project[0][5]))
         grid.add_widget(Label(text='What You Would Do Different:',size_hint=(.5,1)))
-        grid.add_widget(Label(text=project[0][6]))
+        grid.add_widget(WrappedLabel(text=project[0][6]))
         self.add_widget(grid)
     
     @mainthread
@@ -117,26 +161,39 @@ class ReviewProjects(Screen):
         navbar = NavBar()
         self.add_widget(navbar)
         project_names = mysql_connector.get_project_names()
-        self.box = BoxLayout(size_hint=(.9,1),pos_hint={'right':1})
+        self.scroll = ScrollView(size_hint=(.9,1),pos_hint={'right':1})
+        self.box = GridLayout(cols=2,size_hint_y= None,spacing=10)
         for each in project_names:
-            this_button = Button(text=each[0])
+            this_button = Button(text=each[0],size_hint_y=None,height='40dp')
             this_button.bind(on_press= self.select_button)
             self.box.add_widget(this_button)
-        self.add_widget(self.box)
+        self.scroll.add_widget(self.box)
+        self.add_widget(self.scroll)
 
 class ReviewQA(Screen):
+    def select_button(self,btn):
+        self.box.clear_widgets()
+        grid = GridLayout(cols=2,size_hint=(.9,1),pos_hint={'right':1},spacing=(.1,.1))
+        project = mysql_connector.get_qa(btn.text) #name,challenges,mistakes,enjoyed,leadership,conflicts,changes
+        grid.add_widget(Label(text='Question:',size_hint=(.5,1)))
+        grid.add_widget(WrappedLabel(text=project[0][0]))
+        grid.add_widget(Label(text='Answer:',size_hint=(.5,1)))
+        grid.add_widget(WrappedLabel(text=project[0][1]))
+        self.add_widget(grid)
+    
     @mainthread
     def on_enter(self):
         navbar = NavBar()
         self.add_widget(navbar)
-        grid = GridLayout(cols=2,size_hint=(.9,1),pos_hint={'right':1},spacing=(.1,.1))
-        qas = mysql_connector.get_qa()
-        grid.add_widget(Label(text='Questions:'))
-        grid.add_widget(Label(text='Answers:'))
-        for each in qas:
-            grid.add_widget(Label(text=each[0]))
-            grid.add_widget(Label(text=each[1]))
-        self.add_widget(grid)
+        questions = mysql_connector.get_questions()
+        self.scroll = ScrollView(size_hint=(.9,1),pos_hint={'right':1})
+        self.box = GridLayout(cols=2,size_hint_y= None,spacing=10)
+        for each in questions:
+            this_button = WrappedButton(text=each[0],size_hint_y=None,height='40dp')
+            this_button.bind(on_press= self.select_button)
+            self.box.add_widget(this_button)
+        self.scroll.add_widget(self.box)
+        self.add_widget(self.scroll)
 
 kv = Builder.load_file('main.kv')
 

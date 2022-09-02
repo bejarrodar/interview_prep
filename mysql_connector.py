@@ -224,11 +224,23 @@ def add_qa(question,answer):
         cursor.close()
         cnx.close()
         
-def get_qa():
+def get_qa(question):
     try:
         cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
         cursor = cnx.cursor()
-        cursor.execute("SELECT question, answers FROM questions")
+        cursor.execute("SELECT question, answers FROM questions WHERE question = %s",[question])
+        return cursor.fetchall()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+
+def get_questions():
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute("SELECT question FROM questions")
         return cursor.fetchall()
     except mysql.connector.Error as err:
         print(f"Failed executing code: {err}")

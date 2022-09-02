@@ -64,4 +64,31 @@ knowledge = [
  'A dataframe has multiple rows, series has one',
  'A series has multiple rows, dataframe has one']
 
+['pandas',
+ 'pd.Series([1,2], index= ["a","b","c"])',
+ 'Syntax Error',
+ 'Index Error',
+ 'Value Error',
+ 'None of these'],
+
+['pandas',
+ 'What will be the minimum number of arguments require to pass in pandas series?',
+ 'None of these',
+ '3',
+ '4',
+ '2'],
+
+['pandas',
+ 'Amongst which of the following is / are used to analyze the data in pandas',
+ 'Both of these',
+ 'Dataframe',
+ 'Series',
+ 'None of these'],
+
+['pandas',
+ 's =pd.Series([1,2,3,4,5],index= ["a","b","c","d","e"])\nprint(s["f"])',
+ 'ValueError',
+ 'IndexError',
+ 'KeyError',
+ 'None of these']
 ]

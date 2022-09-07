@@ -62,7 +62,7 @@ knowledge = [
  'A dataframe has multiple columns, series has one',
  'A series has multiple columns, dataframe has one',
  'A dataframe has multiple rows, series has one',
- 'A series has multiple rows, dataframe has one']
+ 'A series has multiple rows, dataframe has one'],
 
 ['pandas',
  'pd.Series([1,2], index= ["a","b","c"])',

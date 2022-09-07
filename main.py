@@ -47,6 +47,7 @@ class StudyPage(Screen):
     
     @mainthread
     def on_enter(self):
+        self.clear_widgets()
         navbar = NavBar()
         self.add_widget(navbar)
         self.scroll_box = BoxLayout(size_hint=(.9,.9),pos_hint={'right':1,'top':.8})
@@ -135,6 +136,7 @@ class WrongFlash(Screen):
         self.scroll_box.add_widget(self.scroll)
         self.add_widget(self.scroll_box)
 
+
 class ReviewProjects(Screen):
     def select_button(self,btn):
         self.box.clear_widgets()
@@ -154,10 +156,18 @@ class ReviewProjects(Screen):
         grid.add_widget(WrappedLabel(text=project[0][5]))
         grid.add_widget(Label(text='What You Would Do Different:',size_hint=(.5,1)))
         grid.add_widget(WrappedLabel(text=project[0][6]))
+        delete_button = Button(text="Delete",size_hint=(1, .5))
+        delete_button.bind(on_press=lambda x : self.del_current_project(project[0][0]))
+        grid.add_widget(delete_button)
         self.add_widget(grid)
+        
+    def del_current_project(self,question):
+        mysql_connector.remove_project(question)
+        self.parent.current = 'review_projects'
     
     @mainthread
     def on_enter(self):
+        self.clear_widgets()
         navbar = NavBar()
         self.add_widget(navbar)
         project_names = mysql_connector.get_project_names()
@@ -170,6 +180,7 @@ class ReviewProjects(Screen):
         self.scroll.add_widget(self.box)
         self.add_widget(self.scroll)
 
+
 class ReviewQA(Screen):
     def select_button(self,btn):
         self.box.clear_widgets()
@@ -179,10 +190,18 @@ class ReviewQA(Screen):
         grid.add_widget(WrappedLabel(text=project[0][0]))
         grid.add_widget(Label(text='Answer:',size_hint=(.5,1)))
         grid.add_widget(WrappedLabel(text=project[0][1]))
+        delete_button = Button(text="Delete",size_hint=(1, .2))
+        delete_button.bind(on_press=lambda x : self.del_current_qa(project[0][0]))
+        grid.add_widget(delete_button)
         self.add_widget(grid)
+        
+    def del_current_qa(self,question):
+        mysql_connector.remove_qa(question)
+        self.parent.current = 'review_qa'
     
     @mainthread
     def on_enter(self):
+        self.clear_widgets()
         navbar = NavBar()
         self.add_widget(navbar)
         questions = mysql_connector.get_questions()

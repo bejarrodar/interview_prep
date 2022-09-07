@@ -284,3 +284,29 @@ def get_project_names():
     finally:
         cursor.close()
         cnx.close()
+
+def remove_qa(question):
+    sql_statement = "DELETE FROM questions WHERE question = %s"
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute(sql_statement,[question])
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()
+
+def remove_project(project):
+    sql_statement = "DELETE FROM projects WHERE project_name = %s"
+    try:
+        cnx = mysql.connector.connect(user=login,password=password,host=host,database=database)
+        cursor = cnx.cursor()
+        cursor.execute(sql_statement,[project])
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(f"Failed executing code: {err}")
+    finally:
+        cursor.close()
+        cnx.close()

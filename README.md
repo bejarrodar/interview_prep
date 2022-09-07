@@ -1,9 +1,11 @@
 # interview_prep
 
 MYSQL connector and Kivy are required for this app
+
 you can get these with:
 
 python -m pip install mysql-connector-python
+
 python -m pip install kivy
 
 An app to help prepare for interviews

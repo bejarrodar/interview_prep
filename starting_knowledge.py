@@ -90,5 +90,54 @@ knowledge = [
  'ValueError',
  'IndexError',
  'KeyError',
- 'None of these']
+ 'None of these'],
+
+['linux',
+ 'What command allows you to get user input from the command line?',
+ 'read',
+ 'input',
+ 'ip',
+ 'write'],
+
+['linux',
+ 'Which command is used to sort the lines of data in a file in reverse order?',
+ 'sort -r',
+ 'st',
+ 'sh',
+ 'sort'],
+
+['linux',
+ 'Which of the following commands is used to list the contents of a directory?',
+ 'ls',
+ 'lp',
+ 'dir',
+ 'tar'],
+
+['linux',
+ 'Which command removes an empty directory?',
+ 'rmdir',
+ 'rd',
+ 'rdir',
+ 'rldir'],
+
+['linux',
+ 'Which of the commands will rename a file from "hello.txt" to "world.txt"',
+ 'mv hello.txt world.txt',
+ 'cp hello.txt world.txt',
+ 'rn hello.txt world.txt',
+ 'cat hello.txt world.txt'],
+
+['linux',
+ 'Pressing the up arrow key in the shell will',
+ 'show the previous command',
+ 'erase everything above the cursor',
+ 'move you up a directory',
+ 'auto complete the command'],
+
+['linux',
+ 'The command to show documentation is',
+ 'man',
+ 'doc',
+ 'help',
+ '?']
 ]

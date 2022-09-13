@@ -1,0 +1,303 @@
+#:kivy 1.0.9
+
+<WindowManager>:
+    StudyPage:
+    Projects:
+    QA:
+    DataManager:
+    Commands:
+    Add_Wizard:
+    Rem_Wizard:
+    FlashCard:
+    CorrectFlash:
+    WrongFlash:
+    ReviewProjects:
+    ReviewQA:
+
+<NavBar>:
+    orientation: "vertical"
+    spacing: "10dp"
+    size_hint: .1,1
+    Button:
+        text: "Study"
+        on_press: app.root.current = 'study'
+    Button:
+        text: "Projects"
+        on_press: app.root.current = 'projects'
+    Button:
+        text: "Q/A"
+        on_press: app.root.current = 'qa'
+    Button:
+        text: "Data"
+        on_press: app.root.current = 'data_man'
+
+<StudyPage>:
+    name: 'study'
+
+        
+
+<DataManager>:
+    name: 'data_man'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Button:
+            text: "Enter Mysql Commands"
+            on_press: app.root.current = 'command'
+        Button:
+            text:"Add Data Wizard"
+            on_press: app.root.current = 'add_wizard'
+        Button:
+            text: "Remove Data Wizard"
+            on_press: app.root.current = 'rem_wizard'
+
+
+<QA>:
+    name: 'qa'
+    NavBar:
+    GridLayout:
+        cols: 2
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: 'Questions'
+        TextInput:
+            id: qa_questions
+        Label:
+            text:'Answers'
+        TextInput:
+            id: qa_answers
+        Button:
+            text: 'Add'
+            on_press: app.add_qa(qa_questions,qa_answers)
+        Button:
+            text:'Review'
+            on_press: app.root.current = 'review_qa'
+
+<Projects>:
+    name: 'projects'
+    NavBar:
+    GridLayout:
+        cols: 2
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: 'Common Questions'
+        Label:
+            text: 'Project'
+        Label:
+            text: 'Name'
+        TextInput:
+            id: project_name
+        Label:
+            text: 'Challenges'
+        TextInput:
+            id: challenges
+        Label:
+            text: 'Mistakes/Failures'
+        TextInput:
+            id: mistakes
+        Label:
+            text:'Enjoyed'
+        TextInput:
+            id: enjoyed
+        Label:
+            text: 'Leadership'
+        TextInput:
+            id: leadership
+        Label:
+            text: 'Conflicts'
+        TextInput:
+            id: conflicts
+        Label:
+            text: 'What You Would Do Different'
+        TextInput:
+            id: different
+        Button:
+            text: 'Add'
+            on_press: app.add_project(project_name,challenges,mistakes,enjoyed,leadership,conflicts,different)
+        Button:
+            text: 'Review'
+            on_press: app.root.current = 'review_projects'
+
+<ReviewProjects>:
+    name: 'review_projects'
+
+<ReviewQA>:
+    name: 'review_qa'
+
+<Commands>:
+    name: 'command'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        CodeInput:
+            id: code
+            lexer: app.lexer
+        BoxLayout:
+            size_hint: 1,.1
+            Button:
+                text: "Run Code"
+                on_press: app.command_run(code.text)
+            Button:
+                text: "Clear Code"
+                on_press: code.text = ''
+
+<Add_Wizard>: 
+    name: 'add_wizard'
+    NavBar:
+    GridLayout:
+        cols: 2
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: 'Category'
+        TextInput:
+            size_hint: 1.5,.5
+            id: category
+        Label:
+            text: 'Question'
+        TextInput:
+            size_hint: 1.5,.5
+            id: question
+        Label:
+            text: 'Answer'
+        TextInput:
+            size_hint: 1.5,.5
+            id: answer
+        Label:
+            text: 'Fake Answers'
+        BoxLayout:
+            size_hint: 1.5,.5
+            orientation: "vertical"
+            TextInput:
+                id: fake1
+            TextInput:
+                id: fake2
+            TextInput:
+                id: fake3
+        Button:
+            text: 'Submit'
+            on_press: app.add_wizard(category,answer,question,fake1,fake2,fake3)
+        Button:
+            text:'Cancel'
+            on_press: app.clear_wizard(category,answer,question,fake1,fake2,fake3)
+            on_release: app.root.current = 'data_man'
+
+<Rem_Wizard>:
+    name: 'rem_wizard'
+    NavBar:
+    GridLayout:
+        cols: 2
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: 'You can fill in any field'
+        Label:
+            text: 'it will delete based off only the fields input'
+        Label:
+            text: 'Question'
+        TextInput:
+            size_hint: 1.5,.5
+            id: question
+        Label:
+            text: 'Answer'
+        TextInput:
+            size_hint: 1.5,.5
+            id: answer
+        Label:
+            text: 'Fake Answers'
+        BoxLayout:
+            size_hint: 1.5,.5
+            orientation: "vertical"
+            TextInput:
+                id: fake1
+            TextInput:
+                id: fake2
+            TextInput:
+                id: fake3
+        Button:
+            text: 'Delete'
+            on_press: app.rem_wizard(answer,question,fake1,fake2,fake3)
+        Button:
+            text:'Cancel'
+            on_press: app.clear_rem_wizard(answer,question,fake1,fake2,fake3)
+            on_release: app.root.current = 'data_man'
+
+<CorrectFlash>:
+    name: 'correct_flash'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        canvas.before:
+            Color:
+                rgba: 0, .8, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Correct'
+            color: 0, 0, 0, 1
+            pos_hint: {'center_x': 0.5,'top': 0}
+            size_hint: .2,.1
+        GridLayout:
+            cols: 3
+            id: buttons
+
+<WrongFlash>:
+    name: 'wrong_flash'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        canvas.before:
+            Color:
+                rgba: .8, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'Incorrect'
+            color: 0, 0, 0, 1
+            pos_hint: {'center_x': 0.5,'top': 0}
+            size_hint: .2,.1
+        GridLayout:
+            cols: 3
+            id: buttons
+
+<FlashCard>:
+    name:'flash_card'
+    NavBar:
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: .9,1
+        pos_hint:{'right':1}
+        Label:
+            text: app.question
+        GridLayout:
+            cols: 2
+            size_hint: 1,1.5
+            pos_hint:{'bottom':0}
+            Button:
+                text: app.ans_a
+                text_size: self.size
+                on_press: app.check_answer(1)
+            Button:
+                text: app.ans_b
+                text_size: self.size
+                on_press: app.check_answer(2)
+            Button:
+                text: app.ans_c
+                text_size: self.size
+                on_press: app.check_answer(3)
+            Button:
+                text: app.ans_d
+                text_size: self.size
+                on_press: app.check_answer(4)

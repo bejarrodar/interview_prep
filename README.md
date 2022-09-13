@@ -1,14 +1,14 @@
-# interview_prep
-
-MYSQL connector and Kivy are required for this app
-
-you can get these with:
-
-python -m pip install mysql-connector-python
-
-python -m pip install kivy
+# Interview Prep
 
 An app to help prepare for interviews
+
+You must have a mysql server for the program to work
+
+The program has now been package into an EXE for Windows you can just download Interview prep.zip and extract it
+
+Once it is extracted you can run Interview Prep.exe
+
+DON'T FORGET TO CHANGE THE CONFIG
 
 The config.ini needs to be changed for your database
 
